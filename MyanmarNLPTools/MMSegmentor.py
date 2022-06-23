@@ -3,7 +3,7 @@ import re
 class MMSegmentor:
     def __init__(self):
         # self.PACKAGE_PATH = 'D:\pdy\modules\MyanmarNLPTools\MyanmarNLPTools/'
-        self.PACKAGE_PATH = '/mnt/d/pdy/modules/MyanmarNLPTools/MyanmarNLPTools/'
+        self.PACKAGE_PATH = '/mnt/d/PersonalProjects/MM NLP/modules/MyanmarNLPTools/MyanmarNLPTools/'
         self.syl_seg_regex = re.compile(
             r'(?:(?<!္)([\U00010000-\U0010ffffက-ဪဿ၊-၏]|[၀-၉]+|[^က-၏\U00010000-\U0010ffff]+)(?![ှျ]?[့္်]))',
             re.UNICODE)
@@ -26,7 +26,9 @@ class MMSegmentor:
         return self.all_stop_words
 
 
-    def syllable_segment(self, text):
+    def syllable_segment(self, text, remove_whitespace=False):
+        # `remove_whitespace`: If true, all whitespaces are removed before syllabification, including word separators.
+        text = ''.join(text.split()) if remove_whitespace else text
         return [syl.strip() for syl in self.syl_seg_regex.sub(r'𝕊\1', text).strip('𝕊').split('𝕊')]
 
 

@@ -1,11 +1,13 @@
 from myanmartools import ZawgyiDetector
 from icu import Transliterator
+import re
 
-detector = ZawgyiDetector()
-converter = Transliterator.createInstance('Zawgyi-my')
+
+DETECTOR = ZawgyiDetector()
+CONVERTER = Transliterator.createInstance('Zawgyi-my')
 
 DIGIT_DICT = {
-    'ဝ':'0',
+    'ဝ':'0', # wa lone -- myanmar character that looks identical to the zero in most fonts
     '၀':'0',
     '၁':'1',
     '၂':'2',
@@ -29,7 +31,20 @@ def digit_en2mm(enstr):
     return ''.join(DIGIT_DICT_EN[s] if s in DIGIT_DICT_EN.keys() else s for s in enstr)
 
 
-def normalize_unicode(text):
-    if detector.get_zawgyi_probability(text) > 0.95:
-        return converter.transliterate(text)
+def normalize_unicode(text, probability_threshold=0.95):
+    # `probability_threshold`: probability beyond which we decide it's written in zawgyi
+    if DETECTOR.get_zawgyi_probability(text) > probability_threshold:
+        return CONVERTER.transliterate(text)
     return text
+
+
+
+
+
+URL_EXTRACTOR = re.compile(r'(?P<url>https?://[^\s]+)')
+
+def extract_urls(text):
+    return regex.findall(text)
+
+def remove_urls(text):
+    return regex.sub('', text)
